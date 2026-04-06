@@ -1,0 +1,54 @@
+﻿import { useState } from 'react'
+import { Avatar } from './components/Avatar'
+import { ConversationWidget } from './components/ConversationWidget'
+import type { AvatarPrompt } from './components/Avatar'
+
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'à¤¹à¤¿à¤‚à¤¦à¥€' },
+  { code: 'ta', label: 'à®¤à®®à®¿à®´à¯' },
+]
+
+function App() {
+  const [avatarPrompt, setAvatarPrompt] = useState<AvatarPrompt | null>(null)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [languageHint, setLanguageHint] = useState('en')
+
+  return (
+    <>
+      <h1>TaxAI â€” Indian Income Tax Assistant</h1>
+      <div className="app">
+        <div className="avatar-panel">
+          <Avatar
+            isSpeaking={isSpeaking}
+            prompt={avatarPrompt}
+            className="avatar-canvas"
+          />
+          <div className="lang-tabs">
+            {LANGUAGES.map(({ code, label }) => (
+              <button
+                key={code}
+                type="button"
+                className={languageHint === code ? 'active' : ''}
+                onClick={() => setLanguageHint(code)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="avatar-hint">
+            Ask in your language; Iâ€™ll respond in the same.
+          </p>
+        </div>
+        <ConversationWidget
+          languageHint={languageHint}
+          onAvatarPrompt={setAvatarPrompt}
+          onSpeakingChange={setIsSpeaking}
+        />
+      </div>
+    </>
+  )
+}
+
+export default App
+

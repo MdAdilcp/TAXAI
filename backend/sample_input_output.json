@@ -1,0 +1,85 @@
+{
+  "description": "Sample input and output for TaxAI Tax Engine (AY 2024-25)",
+  "sample_input": {
+    "salary": {
+      "basic": 60000,
+      "hra_received": 24000,
+      "special_allowance": 10000,
+      "other_allowance": 0,
+      "other_income": 0
+    },
+    "investments": {
+      "80C": [50000, 50000, 50000],
+      "80D_self": 15000,
+      "80D_parents": 10000,
+      "80D_self_senior": false,
+      "80D_parents_senior": false,
+      "nps": 25000
+    },
+    "rent_paid": 288000,
+    "home_loan_interest": 150000,
+    "savings_interest": 8000,
+    "professional_tax_paid": 2400,
+    "metro": true
+  },
+  "endpoints_used": {
+    "compute_tax": "POST /api/compute-tax (body: salary, investments, rent_paid, ..., regime)",
+    "optimize_tax": "POST /api/optimize-tax (body: salary, investments, ...)",
+    "generate_itr": "POST /api/generate-itr (body: salary, investments, ..., regime_override?)",
+    "explain_section": "POST /api/explain-section (body: section, context, regime, language)"
+  },
+  "sample_output_structure": {
+    "generate_itr_response": {
+      "total_income": "Gross annual income (float)",
+      "gross_income": "Same as total_income",
+      "total_deductions": "Sum of all allowed deductions",
+      "taxable_income": "total_income - total_deductions",
+      "tax_before_rebate": "Tax from slab",
+      "rebate_87a": "Rebate u/s 87A if applicable",
+      "tax_after_rebate": "tax_before_rebate - rebate_87a",
+      "cess": "4% of tax_after_rebate",
+      "tax_payable": "tax_after_rebate + cess",
+      "effective_rate_pct": "tax_payable / taxable_income * 100",
+      "regime_selected": "old | new",
+      "recommended_regime": "old | new",
+      "deduction_breakup": [
+        {
+          "section": "80C",
+          "amount": 150000,
+          "explanation": "80C deduction: claimed ₹150000, limit ₹150000. Allowed = ₹150000.",
+          "legal_reference": "Income Tax Act 1961, Section 80C; Finance Act 2021."
+        }
+      ],
+      "comparison": {
+        "tax_under_old_regime": 0,
+        "tax_under_new_regime": 0
+      }
+    },
+    "optimize_tax_response": {
+      "recommended_regime": "old | new",
+      "tax_old": 0,
+      "tax_new": 0,
+      "savings_if_switch": 0,
+      "result_old": { "regime": "old", "gross_income": 0, "total_tax": 0, "deduction_breakup": [] },
+      "result_new": { "regime": "new", "gross_income": 0, "total_tax": 0, "deduction_breakup": [] },
+      "suggested_investments": [
+        {
+          "section": "80C",
+          "current_claim": 0,
+          "max_deduction": 150000,
+          "suggested_additional": 0,
+          "message": "Invest ₹X more in 80C..."
+        }
+      ]
+    },
+    "explain_section_response": {
+      "section": "80C",
+      "claimed": 120000,
+      "eligible_limit": 150000,
+      "explanation": "80C deduction: claimed ₹120000, limit ₹150000. Allowed = ₹120000.",
+      "suggestion": "Invest ₹30000 more to maximize 80C benefit.",
+      "legal_reference": "Income Tax Act 1961, Section 80C; Finance Act 2021.",
+      "section_label": "Section 80C — Investments in ELSS, PPF, LIC, etc. (max ₹1.5 Lakh)"
+    }
+  }
+}

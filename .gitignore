@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+.env
+
+# Node / frontend
+node_modules/
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# Logs / temp
+*.log
+audit_logs/
+backend/audit_logs/
+frontend/audit_logs/
+frontend/dist/
+backend/uploads/
+uploads/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

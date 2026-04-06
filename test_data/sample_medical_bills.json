@@ -1,0 +1,4 @@
+[
+  { "hospital_or_provider": "Apollo Hospital", "patient_name": "Ramesh Kumar", "amount": 15000, "date": "2024-01-10" },
+  { "hospital_or_provider": "Local Clinic", "amount": 3500, "date": "2024-02-05" }
+]

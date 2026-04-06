@@ -1,0 +1,77 @@
+{
+  "info": { "name": "TaxAI API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    {
+      "name": "Upload document",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": "" }, { "key": "doc_type", "value": "payslip", "disabled": true }] },
+        "url": "{{base_url}}/api/upload-doc"
+      }
+    },
+    {
+      "name": "Parse salary",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"doc_id\": \"\"\n}\n" },
+        "url": "{{base_url}}/api/parse-salary"
+      }
+    },
+    {
+      "name": "Recommend deductions",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"user_profile\": { \"annual_income\": 1200000, \"metro\": true },\n  \"parsed_docs\": [\n    { \"section\": \"80C\", \"amount\": 150000 },\n    { \"section\": \"80D\", \"amount\": 25000 },\n    { \"rent_amount\": 25000 }\n  ],\n  \"salary_breakup\": {\n    \"basic\": 50000,\n    \"hra\": 20000,\n    \"gross_salary\": 88000,\n    \"professional_tax\": 200\n  }\n}\n" },
+        "url": "{{base_url}}/api/recommend-deductions"
+      }
+    },
+    {
+      "name": "Calculate tax",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"salary_breakup\": {\n    \"ctc\": 1056000,\n    \"basic\": 50000,\n    \"hra\": 20000,\n    \"gross_salary\": 88000,\n    \"professional_tax\": 200,\n    \"net_salary\": 82600\n  },\n  \"other_income\": 0,\n  \"deductions\": [\n    { \"code\": \"80C\", \"name\": \"80C\", \"amount_claimed\": 150000 },\n    { \"code\": \"80D\", \"name\": \"80D\", \"amount_claimed\": 25000 },\n    { \"code\": \"standard_deduction\", \"name\": \"Standard deduction\", \"amount_claimed\": 75000 },\n    { \"code\": \"professional_tax\", \"name\": \"Professional tax\", \"amount_claimed\": 2400 }\n  ]\n}\n" },
+        "url": "{{base_url}}/api/calculate-tax"
+      }
+    },
+    {
+      "name": "Submit return",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"pan\": \"ABCDE1234F\",\n  \"assessment_year\": \"2024-25\",\n  \"return_type\": \"ITR-1\",\n  \"consent_eri\": true,\n  \"consent_pan_verify\": false,\n  \"prefill_data\": {}\n}\n" },
+        "url": "{{base_url}}/api/submit-return"
+      }
+    },
+    {
+      "name": "Filing status",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/status/{{filing_id}}"
+      }
+    },
+    {
+      "name": "Conversation",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"message\": \"How do I claim 80C deduction?\",\n  \"language_hint\": \"en\"\n}\n" },
+        "url": "{{base_url}}/api/conversation"
+      }
+    },
+    {
+      "name": "TTS",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/tts?text=Welcome%20to%20TaxAI&lang=en"
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "filing_id", "value": "" }
+  ]
+}

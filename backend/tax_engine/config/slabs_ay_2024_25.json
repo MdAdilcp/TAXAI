@@ -1,0 +1,67 @@
+{
+  "assessment_year": "2026-27",
+  "financial_year": "2025-26",
+
+  "new_regime": {
+    "is_default": true,
+    "slabs": [
+      [0, 400000, 0.00],
+      [400000, 800000, 0.05],
+      [800000, 1200000, 0.10],
+      [1200000, 1600000, 0.15],
+      [1600000, 2000000, 0.20],
+      [2000000, 2400000, 0.25],
+      [2400000, null, 0.30]
+    ],
+    "rebate_87a_limit": 1200000,
+    "rebate_87a_amount": 60000,
+    "rebate_87a_by_financial_year": {
+      "2024-25": { "limit": 700000, "amount": 25000 },
+      "2025-26": { "limit": 1200000, "amount": 60000 }
+    },
+    "standard_deduction": 75000,
+    "allow_deductions": false,
+    "max_surcharge_rate": 0.25
+  },
+
+  "old_regime": {
+    "is_default": false,
+    "slabs": [
+      [0, 250000, 0.00],
+      [250000, 500000, 0.05],
+      [500000, 1000000, 0.20],
+      [1000000, null, 0.30]
+    ],
+    "rebate_87a_limit": 500000,
+    "rebate_87a_amount": 12500,
+    "standard_deduction": 50000,
+    "allow_deductions": true,
+    "max_surcharge_rate": 0.37
+  },
+
+  "cess_rate": 0.04,
+
+  "surcharge": {
+    "common": [
+      [5000000, 10000000, 0.10],
+      [10000000, 20000000, 0.15],
+      [20000000, 50000000, 0.25]
+    ],
+    "above_5cr_old_regime": 0.37,
+    "above_5cr_new_regime": 0.25
+  },
+
+  "deductions": {
+    "section_80c_limit": 150000,
+    "section_80d_self": 25000,
+    "section_80d_senior_self": 50000,
+    "section_80d_parents": 25000,
+    "section_80d_parents_senior": 50000,
+    "section_80ccd_1b": 50000,
+    "section_80ccd_2_new_rate": 0.14,
+    "section_80tta": 10000,
+    "section_80ttb": 50000,
+    "section_24b_interest_home_loan": 200000,
+    "section_80gg_monthly_limit": 5000
+  }
+}

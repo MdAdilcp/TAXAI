@@ -1,0 +1,6 @@
+[
+  { "section": "80C", "provider_name": "LIC", "amount": 50000, "financial_year": "2023-24" },
+  { "section": "80C", "provider_name": "PPF", "amount": 100000, "financial_year": "2023-24" },
+  { "section": "80D", "provider_name": "Star Health", "amount": 18000, "financial_year": "2023-24" },
+  { "section": "80CCD_1B", "provider_name": "NPS", "amount": 50000, "financial_year": "2023-24" }
+]

@@ -1,0 +1,4 @@
+[
+  { "landlord_name": "A. Singh", "tenant_name": "Ramesh Kumar", "month": "01", "year": 2024, "rent_amount": 25000 },
+  { "landlord_name": "A. Singh", "rent_amount": 25000, "month": "02", "year": 2024 }
+]

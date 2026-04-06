@@ -1,0 +1,34 @@
+[
+  {
+    "id": "payslip_01",
+    "doc_type": "payslip",
+    "structured_data": {
+      "employee_name": "Ramesh Kumar",
+      "employer_name": "Tech Solutions Pvt Ltd",
+      "month": "03",
+      "year": 2024,
+      "basic_salary": 50000,
+      "hra": 20000,
+      "special_allowance": 15000,
+      "other_allowances": 3000,
+      "gross_salary": 88000,
+      "professional_tax": 200,
+      "income_tax_tds": 5200,
+      "net_salary": 82600,
+      "ctc_annual": 1056000
+    }
+  },
+  {
+    "id": "payslip_02",
+    "doc_type": "payslip",
+    "structured_data": {
+      "basic_salary": 70000,
+      "hra": 28000,
+      "special_allowance": 12000,
+      "gross_salary": 110000,
+      "professional_tax": 200,
+      "net_salary": 95000,
+      "ctc_annual": 1320000
+    }
+  }
+]

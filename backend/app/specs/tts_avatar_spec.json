@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TTS & Avatar prompt spec",
+  "description": "JSON payload for TTS and avatar animation from conversation API",
+  "type": "object",
+  "properties": {
+    "text": { "type": "string", "description": "Text to be spoken by TTS" },
+    "language": { "type": "string", "description": "BCP-47 code e.g. en, hi-IN, ta-IN" },
+    "intent": { "type": "string", "enum": ["onboarding", "claim-deduction", "calculate-tax", "submit-return", "explain-why", "general"] },
+    "tts": {
+      "type": "object",
+      "properties": {
+        "provider": { "type": "string", "enum": ["google", "aws", "azure"] },
+        "voice": { "type": "string", "description": "e.g. en-IN-Standard-A, hi-IN-Standard-A" },
+        "text": { "type": "string" }
+      }
+    },
+    "avatar": {
+      "type": "object",
+      "properties": {
+        "expression": { "type": "string", "enum": ["neutral", "helpful", "smile", "thinking"] },
+        "gesture": { "type": "string", "enum": ["idle", "speaking", "listen"] }
+      }
+    }
+  },
+  "required": ["text", "language", "intent"]
+}

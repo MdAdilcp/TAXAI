@@ -1,0 +1,91 @@
+{
+  "80C": {
+    "name": "Deduction under Section 80C",
+    "max_amount": 150000,
+    "applicable_from": "FY 2021-22",
+    "citation": "Income Tax Act 1961, Section 80C; Finance Act 2021",
+    "eligible_instruments": ["ELSS", "PPF", "EPF", "LIC", "ULIP", "NSC", "FD_5Y", "Tuition fees", "Principal repayment home loan"],
+    "requires_proof": true
+  },
+  "80CCC": {
+    "name": "Pension (LIC etc.)",
+    "max_amount": 150000,
+    "note": "Part of 80C ceiling",
+    "citation": "Income Tax Act 1961, Section 80CCC"
+  },
+  "80CCD_1B": {
+    "name": "Additional NPS (self)",
+    "max_amount": 50000,
+    "citation": "Income Tax Act 1961, Section 80CCD(1B); Finance Act 2021",
+    "requires_proof": true
+  },
+  "80D": {
+    "name": "Health insurance premium",
+    "max_amount_self_senior": 50000,
+    "max_amount_self": 25000,
+    "max_amount_parents_senior": 50000,
+    "max_amount_parents": 25000,
+    "citation": "Income Tax Act 1961, Section 80D; Finance Act 2021",
+    "requires_proof": true
+  },
+  "80DD": {
+    "name": "Dependent with disability",
+    "max_amount": 125000,
+    "citation": "Income Tax Act 1961, Section 80DD"
+  },
+  "80DDB": {
+    "name": "Medical treatment (specified diseases)",
+    "max_amount_senior": 100000,
+    "max_amount_other": 40000,
+    "citation": "Income Tax Act 1961, Section 80DDB"
+  },
+  "80E": {
+    "name": "Interest on education loan",
+    "no_limit": true,
+    "citation": "Income Tax Act 1961, Section 80E"
+  },
+  "80G": {
+    "name": "Donations (eligible funds)",
+    "no_limit": true,
+    "citation": "Income Tax Act 1961, Section 80G"
+  },
+  "80TTA": {
+    "name": "Savings account interest",
+    "max_amount": 10000,
+    "citation": "Income Tax Act 1961, Section 80TTA",
+    "note": "For non-seniors; 80TTB for seniors 50000"
+  },
+  "80TTB": {
+    "name": "Interest for senior citizens",
+    "max_amount": 50000,
+    "citation": "Income Tax Act 1961, Section 80TTB"
+  },
+  "HRA": {
+    "name": "House Rent Allowance exemption",
+    "computed": true,
+    "citation": "Income Tax Act 1961, Section 10(13A), Rule 2A",
+    "requires_rent_receipt": true
+  },
+  "LTA": {
+    "name": "Leave Travel Allowance",
+    "computed": true,
+    "citation": "Income Tax Act 1961, Section 10(5), Rule 2B",
+    "limit_per_block": "domestic travel cost, twice in 4-year block"
+  },
+  "standard_deduction": {
+    "name": "Standard deduction (salary)",
+    "amount": 75000,
+    "citation": "Finance Act 2023; applicable AY 2024-25",
+    "applicable_old_regime": true
+  },
+  "professional_tax": {
+    "name": "Professional tax",
+    "no_limit": true,
+    "citation": "State-specific; deductible from salary income"
+  },
+  "home_loan_interest_24b": {
+    "name": "Interest on home loan (self-occupied)",
+    "max_amount": 200000,
+    "citation": "Income Tax Act 1961, Section 24(b)"
+  }
+}
