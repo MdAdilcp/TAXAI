@@ -1,0 +1,10 @@
+# Vercel deployment files - ignore during build
+.venv
+.env*.local
+*.pyc
+__pycache__
+.pytest_cache
+node_modules
+.next
+dist
+build

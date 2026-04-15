@@ -1,0 +1,26 @@
+{
+  "buildCommand": "cd taxai/frontend && npm install && npm run build",
+  "outputDirectory": "taxai/frontend/dist",
+  "installCommand": "pip install -r requirements.txt",
+  "framework": "other",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    }
+  ],
+  "env": {
+    "PYTHONUNBUFFERED": "1",
+    "VITE_API_URL": "@vite_api_url",
+    "OPENROUTER_API_KEY": "@openrouter_api_key",
+    "OPENAI_API_KEY": "@openai_api_key",
+    "GEMINI_API_KEY": "@gemini_api_key"
+  },
+  "functions": {
+    "api/index.py": {
+      "memory": 3008,
+      "maxDuration": 60,
+      "runtime": "python3.11"
+    }
+  }
+}

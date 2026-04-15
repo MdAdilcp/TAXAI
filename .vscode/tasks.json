@@ -1,0 +1,23 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run TaxAI Backend",
+			"type": "shell",
+			"command": "$portPids = @(Get-NetTCPConnection -LocalPort 8001 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique); foreach($procId in $portPids){ Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue }; Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'python.exe' -and $_.CommandLine -like '*uvicorn app.main:app*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }; cd taxai/backend; ../../.venv-2/Scripts/python.exe -m uvicorn app.main:app --port 8001",
+			"isBackground": true
+		},
+		{
+			"label": "Stop TaxAI Backend",
+			"type": "shell",
+			"command": "$portPids = @(Get-NetTCPConnection -LocalPort 8001 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique); foreach($procId in $portPids){ Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue }; Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'python.exe' -and $_.CommandLine -like '*uvicorn app.main:app*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }",
+			"isBackground": false
+		},
+		{
+			"label": "Run TaxAI Frontend",
+			"type": "shell",
+			"command": "cd taxai/frontend; $env:VITE_API_URL='http://127.0.0.1:8001'; npm run dev",
+			"isBackground": true
+		}
+	]
+}
