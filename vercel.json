@@ -2,7 +2,7 @@
   "buildCommand": "cd taxai/frontend && npm install && npm run build",
   "outputDirectory": "taxai/frontend/dist",
   "installCommand": "pip install -r requirements.txt",
-  "framework": "other",
+  "framework": "react",
   "rewrites": [
     {
       "source": "/api/(.*)",
