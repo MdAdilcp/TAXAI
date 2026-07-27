@@ -59,7 +59,7 @@ source .venv/Scripts/activate
 Then install backend dependencies and start the API:
 
 ```bash
-pip install -r backend/requirements.txt
+python -m pip install -r backend/requirements.txt
 cd backend
 ..\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8001
 ```
@@ -160,7 +160,7 @@ Salary components can be **monthly** (basic, hra_received, special_allowance); t
 taxai/
 ├── backend/
 │   ├── app/              # FastAPI app, API routes
-│   ├── tax_engine/        # Standalone computation (slabs, deductions, hra, calculator, optimizer, itr_generator, explain)
+│   ├── tax_engine/       # Standalone computation (slabs, deductions, hra, calculator, optimizer, itr_generator, explain)
 │   ├── tests/            # Unit tests (test_tax_engine.py)
 │   ├── sample_input_output.json
 │   └── requirements.txt
