@@ -108,6 +108,14 @@ Open http://localhost:5173 for the avatar + conversation demo.
 - If frontend and backend are served from the same origin with reverse proxy, `VITE_API_URL` can be left empty and `/api/*` routes will work directly.
 - For local development, backend defaults to port `8001`.
 
+## Live Deployment
+
+The current deployed frontend is available at:
+
+`https://textract-theta.vercel.app`
+
+> Note: This is the live Vercel deployment URL for the `taxai` project.
+
 ## API Endpoints (Tax Engine — No External APIs)
 
 | Method | Endpoint | Description |
