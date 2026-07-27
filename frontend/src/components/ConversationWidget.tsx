@@ -110,6 +110,24 @@ interface ConversationWidgetProps {
   storageKey?: string
 }
 
+const SUGGESTION_SETS: Record<string, string[]> = {
+  en: [
+    'How can I optimize my HRA claim?',
+    'What documents do I need for FY 2024-25?',
+    'Help me compare old and new tax regime',
+  ],
+  hi: [
+    'मैं HRA कैसे क्लेम कर सकता हूँ?',
+    'FY 2024-25 के लिए मुझे कौन से दस्तावेज चाहिए?',
+    'पुराने और नए टैक्स रेजिम को तुलना करो',
+  ],
+  ta: [
+    'நான் HRA ஐ எப்படி பாரப்படுத்தலாம்?',
+    'FY 2024-25 க்கு என்ன ஆவணங்கள் வேண்டும்?',
+    'பண்டைய மற்றும் புதிய வரி திட்டத்தை ஒப்பிடு',
+  ],
+}
+
 const UI_TEXT: Record<string, { 
   placeholder: string; 
   thinking: string; 
@@ -242,6 +260,7 @@ export function ConversationWidget({
       return false
     }
   })
+  const [suggestions, setSuggestions] = useState<string[]>([])
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -253,24 +272,91 @@ export function ConversationWidget({
       audioRef.current.currentTime = 0
       audioRef.current = null
     }
-    if ('speechSynthesis' in window) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel()
     }
     onSpeakingChange?.(false)
   }
 
+  const createSpeechRecognition = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SpeechRecognition) return null
+
+    const recognition = new SpeechRecognition()
+    recognition.continuous = false
+    recognition.interimResults = true
+    recognition.lang = `${languageHint}-IN`
+    recognition.maxAlternatives = 1
+
+    recognition.onstart = () => setIsListening(true)
+    recognition.onend = () => {
+      setIsListening(false)
+      recognitionRef.current = null
+    }
+    recognition.onresult = (event: any) => {
+      let interimTranscript = ''
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript
+        if (event.results[i].isFinal) {
+          setInput(prev => prev + transcript)
+        } else {
+          interimTranscript += transcript
+        }
+      }
+      if (interimTranscript) {
+        setInput(prev => prev.split(' ').slice(0, -1).join(' ') + ' ' + interimTranscript)
+      }
+    }
+    recognition.onerror = () => {
+      setIsListening(false)
+      recognitionRef.current = null
+    }
+
+    return recognition
+  }
+
+  const initVoiceRecognition = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    setVoiceAvailable(Boolean(SpeechRecognition))
+  }
+
+  const stopVoiceRecognition = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort?.()
+      } catch {
+        // ignore abort errors
+      }
+      try {
+        recognitionRef.current.stop?.()
+      } catch {
+        // ignore stop errors
+      }
+      recognitionRef.current = null
+      setIsListening(false)
+    }
+  }
+
   const playAudioWithAvatar = async (src: string) => {
     stopCurrentPlayback()
-    const audio = new Audio(src)
-    audioRef.current = audio
-    audio.onplay = () => onSpeakingChange?.(true)
-    audio.onended = () => onSpeakingChange?.(false)
-    audio.onerror = () => onSpeakingChange?.(false)
-    await audio.play()
+    return new Promise<void>((resolve, reject) => {
+      const audio = new Audio(src)
+      audioRef.current = audio
+      audio.onplay = () => onSpeakingChange?.(true)
+      audio.onended = () => {
+        onSpeakingChange?.(false)
+        resolve()
+      }
+      audio.onerror = () => {
+        onSpeakingChange?.(false)
+        reject(new Error('Audio playback failed'))
+      }
+      audio.play().catch(reject)
+    })
   }
 
   const speakWithBrowser = (text: string, lang: string) => {
-    if (!('speechSynthesis' in window) || !text.trim()) {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !text.trim()) {
       onSpeakingChange?.(false)
       return false
     }
@@ -308,22 +394,32 @@ export function ConversationWidget({
     const lang = data.language_responded || languageHint || 'en'
     const spokenText = (data.spoken_reply || data.reply || '').trim()
 
-    try {
-      if (data.tts_audio_data) {
+    if (!data.avatar_prompt) {
+      onAvatarPrompt?.({
+        text: spokenText || 'I am ready with your tax answer.',
+        avatar: { expression: 'helpful', gesture: 'wave' },
+      })
+    }
+
+    if (data.tts_audio_data) {
+      try {
         await playAudioWithAvatar(data.tts_audio_data)
         return
+      } catch {
+        // fallback to browser speech if audio playback fails
       }
+    }
 
-      if (data.tts_audio_url) {
+    if (data.tts_audio_url) {
+      try {
         await playAudioWithAvatar(data.tts_audio_url)
         return
+      } catch {
+        // fallback to browser speech if audio playback fails
       }
-
-      const ttsUrl = `${API_BASE}/api/tts?text=${encodeURIComponent(spokenText)}&lang=${lang}`
-      await playAudioWithAvatar(ttsUrl)
-    } catch {
-      speakWithBrowser(spokenText, lang)
     }
+
+    speakWithBrowser(spokenText || data.reply || '', lang)
   }
 
   const waitForRender = async () => {
@@ -335,33 +431,18 @@ export function ConversationWidget({
 
   // Initialize Web Speech API
   useEffect(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-    if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition()
-      recognitionRef.current.continuous = false
-      recognitionRef.current.interimResults = true
-      recognitionRef.current.lang = `${languageHint}-IN`
-      
-      recognitionRef.current.onstart = () => setIsListening(true)
-      recognitionRef.current.onend = () => setIsListening(false)
-      recognitionRef.current.onresult = (event: any) => {
-        let interimTranscript = ''
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript
-          if (event.results[i].isFinal) {
-            setInput(prev => prev + transcript)
-          } else {
-            interimTranscript += transcript
-          }
-        }
-        if (interimTranscript) {
-          setInput(prev => prev.split(' ').slice(0, -1).join(' ') + ' ' + interimTranscript)
-        }
-      }
-      recognitionRef.current.onerror = () => setIsListening(false)
-      
+    initVoiceRecognition()
+    if (recognitionRef.current) {
       setVoiceAvailable(true)
     }
+
+    return () => {
+      stopVoiceRecognition()
+    }
+  }, [languageHint])
+
+  useEffect(() => {
+    setSuggestions(SUGGESTION_SETS[languageHint] || SUGGESTION_SETS.en)
   }, [languageHint])
 
   // Persist chat history to localStorage whenever messages or sessionId change
@@ -381,18 +462,31 @@ export function ConversationWidget({
 
   useEffect(() => () => {
     stopCurrentPlayback()
+    stopVoiceRecognition()
   }, [])
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   useEffect(scrollToBottom, [messages])
 
   const toggleVoiceInput = () => {
+    if (!recognitionRef.current) {
+      recognitionRef.current = createSpeechRecognition()
+    }
     if (!recognitionRef.current) return
+
     if (isListening) {
-      recognitionRef.current.stop()
+      try {
+        recognitionRef.current.stop()
+      } catch {
+        // ignore stop errors
+      }
       setIsListening(false)
     } else {
-      recognitionRef.current.start()
+      try {
+        recognitionRef.current.start()
+      } catch {
+        setIsListening(false)
+      }
     }
   }
 
@@ -412,7 +506,9 @@ export function ConversationWidget({
     setInput('')
     setMessages((m) => [...m, { role: 'user', content: text }])
     setLoading(true)
+    stopVoiceRecognition()
     stopCurrentPlayback()
+    onAvatarPrompt?.({ text: 'Let me check that for you...', avatar: { expression: 'focused', gesture: 'think' } })
     
     try {
       // Prepare document context
@@ -423,7 +519,7 @@ export function ConversationWidget({
         ocr_status: doc.ocr_status,
       })) || []
 
-      const compactHistory = messages.slice(-6).map(m => ({
+      const compactHistory = [...messages, { role: 'user', content: text }].slice(-6).map(m => ({
         role: m.role,
         content: m.content.slice(0, 320),
       }))
@@ -452,6 +548,29 @@ export function ConversationWidget({
 
   return (
     <div className="chat-panel">
+      <div className="assistant-status-row">
+        <div className="status-pill">
+          {loading ? 'Thinking...' : isListening ? 'Listening' : 'Ready to help'}
+        </div>
+        <div className="status-pill status-pill--lang">{languageHint.toUpperCase()}</div>
+        <div className={`status-pill ${isMuted ? 'status-pill--muted' : 'status-pill--voice'}`}>
+          {isMuted ? 'Audio muted' : 'Voice enabled'}
+        </div>
+      </div>
+      {suggestions.length > 0 && (
+        <div className="quick-suggestions">
+          {suggestions.map((suggestion) => (
+            <button
+              key={suggestion}
+              type="button"
+              className="suggestion-chip"
+              onClick={() => setInput(suggestion)}
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="chat-messages">
         {messages.length === 0 && (
           <p className="msg assistant chat-empty-msg">
@@ -466,7 +585,11 @@ export function ConversationWidget({
           </div>
         ))}
         {loading && (
-          <div className="msg assistant">{ui.thinking}</div>
+          <div className="msg assistant chat-typing-indicator">
+            <span className="typing-dot" />
+            <span className="typing-dot" />
+            <span className="typing-dot" />
+          </div>
         )}
         <div ref={messagesEndRef} />
       </div>

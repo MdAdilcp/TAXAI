@@ -34,13 +34,37 @@ See **`backend/tax_engine/README.md`** for the detailed tax calculation flow and
 ### Backend (Tax Engine + API)
 
 ```bash
-cd taxai
+cd TAXAI
 python -m venv .venv
-.venv\Scripts\activate   # Windows; on Unix: source .venv/bin/activate
+```
+
+On Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+On Windows CMD:
+
+```cmd
+.venv\Scripts\activate.bat
+```
+
+On Git Bash / Unix shell:
+
+```bash
+source .venv/Scripts/activate
+```
+
+Then install backend dependencies and start the API:
+
+```bash
 pip install -r backend/requirements.txt
 cd backend
-uvicorn app.main:app --reload --port 8001
+..\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8001
 ```
+
+If `python` does not resolve to the venv interpreter on Windows, use the explicit venv path shown above.
 
 No API keys are required for the **tax computation endpoints**. Optional: set `OPENROUTER_API_KEY` for OCR/conversation and `GOOGLE_APPLICATION_CREDENTIALS` only if you want Vision fallback.
 
