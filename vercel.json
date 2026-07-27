@@ -1,7 +1,7 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "installCommand": "pip install -r backend/requirements.txt",
+  "installCommand": "python -m pip install --break-system-packages -r backend/requirements-prod.txt",
   "framework": "vite",
   "rewrites": [
     {
@@ -11,16 +11,9 @@
   ],
   "env": {
     "PYTHONUNBUFFERED": "1",
-    "VITE_API_URL": "@vite_api_url",
-    "OPENROUTER_API_KEY": "@openrouter_api_key",
-    "OPENAI_API_KEY": "@openai_api_key",
-    "GEMINI_API_KEY": "@gemini_api_key"
-  },
-  "functions": {
-    "api/index.py": {
-      "memory": 3008,
-      "maxDuration": 60,
-      "runtime": "python3.11"
-    }
+    "VITE_API_URL": "",
+    "OPENROUTER_API_KEY": "",
+    "OPENAI_API_KEY": "",
+    "GEMINI_API_KEY": ""
   }
 }
